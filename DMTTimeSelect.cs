@@ -1,34 +1,34 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
+
 /*
- * MenuOptionScript.cs 
- * Version 1.3
+ * TimeSelect.cs 
+ * Version 2.0
  * 
- * author: Ettl Jörg, Brandner Vega, Kabosch Lena, Zhou Erjiao
- * last changed: 1.06.2024
+ * based on code from: Ettl, Brandner, Kabosch & Zhou
+ * last changed: 26.02.2025 by DMT Team, FH JOANNEUM, Nischelwitzer
  * 
  * description:
- * Handles collision events to trigger a timer and load a new scene or start a GameObject
- * 
+ * EyeToy Menu like Button with fill effect
+ * Handles collision events to trigger a timer for the effect and execute events
  */
 
 [RequireComponent(typeof(Image))]
-public class MenuOptionScript : MonoBehaviour
+public class DMTTimeSelect : MonoBehaviour
 {
     [Tooltip("Image that will be filled over time")]
     public Image workingImage;
-
     [Tooltip("Duration for the timer in seconds")]
-    public float duration;
+    public float duration = 2.0f;
+
+    [Tooltip("GameObject to activate when the timer starts (optional)")]
+    public UnityEvent toExecuteStart;
+    [Tooltip("GameObject to activate after the timer ends (optional)")]
+    public UnityEvent toExecuteEnd;
 
     private Coroutine timerCoroutine;
-
-    [Tooltip("GameObject to activate after the timer ends (optional)")]
-    public UnityEvent toExecute;
 
     private void Start()
     {
@@ -40,7 +40,12 @@ public class MenuOptionScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"{gameObject.name} collided with {other.name}");
+        Debug.Log($"##### DMTTimeSelect: {gameObject.name} collided with {other.name}");
+
+        if (toExecuteStart != null)
+        {
+            toExecuteStart.Invoke();
+        }
 
         if (timerCoroutine != null)
         {
@@ -52,7 +57,7 @@ public class MenuOptionScript : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log($"{gameObject.name} ended collision with {other.name}");
+        Debug.Log($"##### DMTTimeSelect: {gameObject.name} ended collision with {other.name}");
 
         if (timerCoroutine != null)
         {
@@ -68,7 +73,6 @@ public class MenuOptionScript : MonoBehaviour
     private IEnumerator TimerCoroutine(float timeout)
     {
         float time = 0;
-
         while (time < timeout)
         {
             time += Time.deltaTime;
@@ -80,15 +84,14 @@ public class MenuOptionScript : MonoBehaviour
         }
 
         // Code to execute after timeout
-        if (toExecute != null)
+        if (toExecuteEnd != null)
         {
-            toExecute.Invoke();
+            toExecuteEnd.Invoke();
         }
     }
 
     private void ActivateGameObject()
     {
-        toExecute.Invoke(); // Activate the specified GameObject after timeout
+        toExecuteEnd.Invoke(); // Activate the specified GameObject after timeout
     }
-
 }
