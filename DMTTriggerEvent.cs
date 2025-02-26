@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 /*
 * triggers a event
@@ -10,7 +9,7 @@ using UnityEngine.SceneManagement;
 * 
 * example usage: can be used to play audiosource on trigger
 * 
-* Author: DMT Team, FH JOANNEUM, IMA,´DMT, NIS, 2025
+* Author: DMT Team, FH JOANNEUM, IMA,Â´DMT, NIS, 2025
 * www.fh-joanneum.at
 */
 
