@@ -5,14 +5,18 @@ using UnityEngine.Events;
 
 /*
  * TimeSelect.cs 
- * Version 2.0
+ * Version 2.1
  * 
  * based on code from: Ettl, Brandner, Kabosch & Zhou
- * last changed: 26.02.2025 by DMT Team, FH JOANNEUM, Nischelwitzer
+ * last changed: 27.02.2025 by DMT Team, FH JOANNEUM, Nischelwitzer
  * 
  * description:
  * EyeToy Menu like Button with fill effect
  * Handles collision events to trigger a timer for the effect and execute events
+ * Event 1: Start (inside OnTriggerEnter)
+ * Event 2: Canceled (inside OnTriggerExit)
+ * Event 3: End (inside TimerCoroutine) Selected
+ * 
  */
 
 [RequireComponent(typeof(Image))]
@@ -25,6 +29,8 @@ public class DMTTimeSelect : MonoBehaviour
 
     [Tooltip("GameObject to activate when the timer starts (optional)")]
     public UnityEvent toExecuteStart;
+    [Tooltip("GameObject to activate after the timer is canceld (optional)")]
+    public UnityEvent toExecuteCanceled;
     [Tooltip("GameObject to activate after the timer ends (optional)")]
     public UnityEvent toExecuteEnd;
 
@@ -63,6 +69,8 @@ public class DMTTimeSelect : MonoBehaviour
         {
             StopCoroutine(timerCoroutine);
             timerCoroutine = null;
+            toExecuteCanceled.Invoke();
+
             if (workingImage != null)
             {
                 workingImage.fillAmount = 1.0f; // Reset fill amount
